@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Информационный сайт</title>
+</head>
+<body>
+    <h1>Последние статьи</h1>
+    <ul>
+        {% for article in articles %}
+        <li>
+            <a href="{{ url_for('article_details', article_id=article.id) }}">{{ article.title }}</a>
+            <p>{{ article.author }} - {{ article.created_at.strftime('%Y-%m-%d') }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
