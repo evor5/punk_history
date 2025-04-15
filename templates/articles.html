@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='articles.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="page-title">📰 Статьи PRIME PUNK</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    {% if current_user.is_authenticated %}
+    <section class="article-create-section">
+        <h2>Новая статья</h2>
+        <form method="POST" enctype="multipart/form-data" class="article-form">
+            <input type="text" name="title" placeholder="Заголовок статьи" required class="input-text">
+            <textarea name="content" placeholder="Текст статьи..." rows="6" required class="textarea"></textarea>
+            
+            <label class="file-upload">
+                <span>➕ Прикрепить медиа</span>
+                <input type="file" name="media" style="display: none;">
+            </label>
+
+            <button type="submit" class="submit-button">Опубликовать</button>
+        </form>
+    </section>
+    {% endif %}
+
+    <section class="latest-articles">
+        <h3 class="section-title">Последние материалы</h3>
+        <div class="articles-grid">
+            {% for article in articles %}
+            <div class="article-card">
+                <div class="article-image">
+                    {% if article.media_filename %}
+                        <img src="{{ url_for('static', filename='uploads/' ~ article.media_filename) }}" alt="{{ article.title }}">
+                    {% else %}
+                        <img src="https://i.imgur.com/default-punk.jpg" alt="По умолчанию">
+                    {% endif %}
+                </div>
+                <div class="article-content">
+                    <h4 class="article-title">{{ article.title }}</h4>
+                    <div class="article-meta">
+                        <span class="article-date">{{ article.created_at.strftime('%d.%m.%Y') }}</span>
+                        <span class="article-views">{{ article.views }} просмотров</span>
+                    </div>
+                    <p class="article-excerpt">{{ article.content[:150] }}...</p>
+                    <a href="{{ url_for('article_details', article_id=article.id) }}" class="read-more">Читать</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}

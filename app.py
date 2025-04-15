@@ -12,12 +12,20 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_migrate import Migrate
 from sqlalchemy.exc import IntegrityError
 from faker import Faker
+import os
+from werkzeug.utils import secure_filename
 
 # Инициализация приложения
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key-here'  # Важно заменить на сложный ключ!
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:2046@localhost/prime_punk'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+
+# В начало файла
+UPLOAD_FOLDER = 'static/uploads'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Инициализация расширений
 db = SQLAlchemy(app)
@@ -48,6 +56,7 @@ class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
     content = db.Column(db.Text, nullable=False)
+    media_filename = db.Column(db.String(255), nullable=True)  # <-- добавлено
     created_at = db.Column(db.DateTime, default=db.func.now())
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     category = db.relationship('Category', backref='articles')
@@ -139,10 +148,11 @@ def register():
                 new_user = User(
                     username=form_data['username'],
                     email=form_data['email'],
-                    password_hash=generate_password_hash(form_data['password']),
                     articles_count=0,
                     age=0
                 )
+                new_user.set_password(form_data['password'])
+
                 db.session.add(new_user)
                 db.session.commit()
                 flash('Регистрация успешно завершена! Теперь вы можете войти.', 'success')
@@ -156,6 +166,33 @@ def register():
                          form_errors=form_errors,
                          form_data=form_data)
 
+@app.route('/articles', methods=['GET', 'POST'])
+@login_required
+def articles_page():
+    if request.method == 'POST':
+        title = request.form.get('title')
+        content = request.form.get('content')
+        media_file = request.files.get('media')
+
+        filename = None
+        if media_file and media_file.filename:
+            filename = secure_filename(media_file.filename)
+            media_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            media_file.save(media_path)
+
+        article = Article(
+            title=title,
+            content=content,
+            media_filename=filename
+        )
+        db.session.add(article)
+        db.session.commit()
+        flash('Статья успешно опубликована!', 'success')
+        return redirect(url_for('articles_page'))
+
+    articles = Article.query.order_by(Article.created_at.desc()).all()
+    return render_template('articles.html', articles=articles)
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -164,7 +201,7 @@ def login():
 
         user = User.query.filter_by(username=username).first()
         if user is None or not user.check_password(password):
-            flash('Неверное имя пользователя или пароль!')
+            flash('Неверное имя пользователя или пароль!', 'danger')
             return redirect(url_for('login'))
 
         login_user(user)
