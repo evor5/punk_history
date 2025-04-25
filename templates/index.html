@@ -1,146 +1,86 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends 'base.html' %}
+
+{% block title %}PRIME PUNK - История панк-культуры{% endblock %}
+
+{% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <title>PRIME PUNK - История панк-культуры</title>
-</head>
-<body>
-    <header>
-        <div class="container">
-            <div class="logo">
-                <h1>PRIME PUNK</h1>
-                <div class="slogan">Хроники панк-революции</div>
-            </div>
-            
-            <nav class="nav-menu">
-                <div class="nav-links">
-                    <ul>
-                        <li><a href="{{ url_for('index') }}">Главная</a></li>
-                        <li><a href="{{ url_for('articles_page') }}" class="feature-link">Статьи</a></li>
-                        <li><a href="#">Панк Timeline</a></li>
-                        <li><a href="#">О нас</a></li>
-                    </ul>
-                </div>
-                
-                <div class="user-menu">
-                    {% if current_user.is_authenticated %}
-                        <div class="dropdown">
-                            <div class="user-profile">
-                                <img src="../static/uploads/punk_ava.png" alt="Аватар">
-                                <a href="{{ url_for('profile') }}">{{ current_user.username }}</a>
-                            </div>
-                            <div class="dropdown-content">
-                                <a href="{{ url_for('profile') }}">Профиль</a>
-                                <a href="#">Настройки</a>
-                                <a href="{{ url_for('logout') }}">Выйти</a>
-                            </div>
-                        </div>
-                    {% else %}
-                        <a href="{{ url_for('login') }}" class="login">Войти</a>
-                        <a href="{{ url_for('register') }}" class="register">Регистрация</a>
-                    {% endif %}
-                </div>
-            </nav>
-        </div>
-    </header>
-    
-    <div class="flash-messages">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="flash-message">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+{% endblock %}
+
+{% block content %}
+
+<div class="flash-messages">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash-message">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+
+<div class="hero">
+    <img src="{{ url_for('static', filename='uploads/punk_poster.jpg') }}" alt="Панк-сцена" class="hero-image">
+    <div class="hero-overlay">
+        <h2 class="hero-title">История панк-культуры</h2>
+        <p class="hero-subtitle">От Sex Pistols до наших дней. Полная хроника бунта, музыки и стиля, который изменил мир.</p>
+        <a href="#" class="hero-button">Начать путешествие</a>
     </div>
-    
-    <div class="container">
-        <div class="hero">
-            <img src="../static/uploads/punk_poster.jpg" alt="Панк-сцена" class="hero-image">
-            <div class="hero-overlay">
-                <h2 class="hero-title">История панк-культуры</h2>
-                <p class="hero-subtitle">От Sex Pistols до наших дней. Полная хроника бунта, музыки и стиля, который изменил мир.</p>
-                <a href="#" class="hero-button">Начать путешествие</a>
-            </div>
+</div>
+
+<section class="features-section">
+    <h3 class="section-title">Почему Prime Punk?</h3>
+    <div class="features">
+        <div class="feature-card">
+            <div class="feature-icon">✺</div>
+            <h4 class="feature-title">Архивы</h4>
+            <p class="feature-text">Самая полная коллекция материалов о панк-движении со всего мира</p>
         </div>
-        
-        <section class="features-section">
-            <h3 class="section-title">Почему Prime Punk?</h3>
-            <div class="features">
-                <div class="feature-card">
-                    <div class="feature-icon">✺</div>
-                    <h4 class="feature-title">Архивы</h4>
-                    <p class="feature-text">Самая полная коллекция материалов о панк-движении со всего мира</p>
-                    <a href="#" class="feature-link">Исследовать</a>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">✪</div>
-                    <h4 class="feature-title">Хронология</h4>
-                    <p class="feature-text">Подробная временная шкала развития панк-культуры по годам</p>
-                    <a href="#" class="feature-link">Изучить</a>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
-                    <h4 class="feature-title">Эксклюзивы</h4>
-                    <p class="feature-text">Интервью с участниками движения и редкие архивные материалы</p>
-                    <a href="#" class="feature-link">Открыть</a>
-                </div>
-            </div>
-        </section>
-        
-        <section class="latest-articles">
-            <h3 class="section-title">Последние материалы</h3>
-            <div class="articles-grid">
-                {% for article in articles %}
-                <div class="article-card">
-                    <div class="article-image">
-                        {% if article.media_filename %}
-                            <img src="{{ url_for('static', filename='uploads/' ~ article.media_filename) }}" alt="{{ article.title }}">
-                        {% else %}
-                            <img src="https://i.imgur.com/default-punk.jpg" alt="По умолчанию">
-                        {% endif %}
-                    </div>
-                    <div class="article-content">
-                        <h4 class="article-title">{{ article.title }}</h4>
-                        <div class="article-meta">
-                            <span class="article-date">{{ article.created_at.strftime('%d.%m.%Y') }}</span>
-                            <span class="article-views">{{ article.views }} просмотров</span>
-                        </div>
-                        <p class="article-excerpt">{{ article.content[:150] }}...</p>
-                        <a href="{{ url_for('article_details', article_id=article.id) }}" class="read-more">Читать</a>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </section>
-        
-        <section class="newsletter">
-            <h4 class="newsletter-title">Подпишись на панк-рассылку</h4>
-            <p class="newsletter-text">Получай эксклюзивные материалы, редкие интервью и анонсы новых статей прямо на почту</p>
-            <form class="newsletter-form">
-                <input type="email" placeholder="ТВОЙ EMAIL" class="newsletter-input" required>
-                <button type="submit" class="newsletter-button">Подписаться</button>
-            </form>
-        </section>
+        <div class="feature-card">
+            <div class="feature-icon">✪</div>
+            <h4 class="feature-title">Хронология</h4>
+            <p class="feature-text">Подробная временная шкала развития панк-культуры по годам</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h4 class="feature-title">Эксклюзивы</h4>
+            <p class="feature-text">Интервью с участниками движения и редкие архивные материалы</p>
+        </div>
     </div>
-    
-    <footer>
-        <div class="container">
-            <div class="footer-links">
-                <a href="#">О проекте</a>
-                <a href="#">Контакты</a>
-                <a href="#">Реклама</a>
-                <a href="#">Правила</a>
-                <a href="#">FAQ</a>
+</section>
+
+<section class="latest-articles">
+    <h3 class="section-title">Последние материалы</h3>
+    <div class="articles-grid">
+        {% for article in articles %}
+        <div class="article-card">
+            <div class="article-image">
+                {% if article.media_filename %}
+                    <img src="{{ url_for('static', filename='uploads/' ~ article.media_filename) }}" alt="{{ article.title }}">
+                {% else %}
+                    <img src="https://i.imgur.com/default-punk.jpg" alt="По умолчанию">
+                {% endif %}
             </div>
-            <p>© 2023 PRIME PUNK. Все права не признаны. Копируйте, воруйте, распространяйте.</p>
+            <div class="article-content">
+                <h4 class="article-title">{{ article.title }}</h4>
+                <div class="article-meta">
+                    <span class="article-date">{{ article.created_at.strftime('%d.%m.%Y') }}</span>
+                    <span class="article-views">{{ article.views }} просмотров</span>
+                </div>
+                <p class="article-excerpt">{{ article.content[:150] }}...</p>
+                <a href="{{ url_for('article_details', article_id=article.id) }}" class="read-more">Читать</a>
+            </div>
         </div>
-    </footer>
-    
-    <div class="punk-stamp"></div>
-</body>
-</html>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="newsletter">
+    <h4 class="newsletter-title">Подпишись на панк-рассылку</h4>
+    <p class="newsletter-text">Получай эксклюзивные материалы, редкие интервью и анонсы новых статей прямо на почту</p>
+    <form class="newsletter-form">
+        <input type="email" placeholder="ТВОЙ EMAIL" class="newsletter-input" required>
+        <button type="submit" class="newsletter-button">Подписаться</button>
+    </form>
+</section>
+
+{% endblock %}

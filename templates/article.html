@@ -1,19 +1,39 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ article.title }}</title>
-</head>
-<body>
-    <h1>{{ article.title }}</h1>
-    <p>{{ article.content }}</p>
-    <p>Автор: {{ article.author }}</p>
-    <p>Дата публикации: {{ article.created_at.strftime('%Y-%m-%d') }}</p>
-    <h2>Теги:</h2>
-    <ul>
-        {% for tag in article.tags %}
-        <li>{{ tag.name }}</li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='article.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <section class="article-details">
+        <h1 class="article-title">{{ article.title }}</h1>
+        <div class="article-meta">
+            <span class="article-date">{{ article.created_at.strftime('%d.%m.%Y') }}</span>
+            <span class="article-author">Автор: {{ article.author }}</span>
+        </div>
+
+        {% if article.media_filename %}
+        <div class="article-media">
+            <img src="{{ url_for('static', filename='uploads/' ~ article.media_filename) }}" alt="{{ article.title }}">
+        </div>
+        {% endif %}
+
+        <div class="article-body">
+            <p>{{ article.content }}</p>
+        </div>
+
+        {% if article.tags %}
+        <div class="article-tags">
+            <h3>Теги:</h3>
+            <ul>
+                {% for tag in article.tags %}
+                    <li class="tag">{{ tag.name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

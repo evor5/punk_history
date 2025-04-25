@@ -115,9 +115,8 @@ header {
 .user-menu {
     display: flex;
     align-items: center;
-    position: fixed;
-    top: 20px;
-    right: 20px;
+    margin-left: auto; /* Чтобы сдвинуть в правую часть, если используется flex-контейнер */
+    gap: 10px;
 }
 
 .user-menu a {
