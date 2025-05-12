@@ -1,0 +1,202 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Rock+Salt&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #000;
+    color: #fff;
+    min-height: 100vh;
+    background-image: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 40px,
+        rgba(255, 0, 0, 0.05) 40px,
+        rgba(255, 0, 0, 0.05) 80px
+    );
+    position: relative;
+    overflow-x: hidden;
+}
+
+body::after {
+    content: "PUNK  •  RIOT  •  ANARCHY  •  DIY  •  NOISE  •  RESIST  •  CHAOS  •  UNITY  •  FREEDOM";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: rgba(255, 0, 0, 0.05);
+    font-size: 48px;
+    font-family: 'Rock Salt', cursive;
+    white-space: nowrap;
+    overflow: hidden;
+    z-index: 0;
+    line-height: 1.4;
+    pointer-events: none;
+    text-align: center;
+    word-spacing: 30px;
+    transform: rotate(-15deg);
+}
+
+.user-menu {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+}
+
+.user-menu .back-button {
+    color: #ff0000;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 5px 15px;
+    border: 2px solid #ff0000;
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+
+.user-menu .back-button:hover {
+    background-color: #ff0000;
+    color: #000;
+}
+
+header {
+    text-align: center;
+    padding-top: 60px;
+}
+
+.logo h1 {
+    font-family: 'Rock Salt', cursive;
+    font-size: 52px;
+    color: #ff0000;
+    letter-spacing: 5px;
+    text-shadow: 3px 3px #fff, 6px 6px #ff0000;
+}
+
+.logo .slogan {
+    color: #aaa;
+    font-style: italic;
+    font-size: 14px;
+    margin-top: 5px;
+    letter-spacing: 2px;
+}
+
+.auth-section {
+    display: flex;
+    justify-content: center;
+    padding: 60px 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.auth-box {
+    background-color: #111;
+    padding: 40px;
+    border: 2px solid #ff0000;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 500px;
+}
+
+.auth-title {
+    font-size: 24px;
+    margin-bottom: 30px;
+    text-align: center;
+    font-weight: 700;
+    color: #ff0000;
+    letter-spacing: 2px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ff0000;
+    background: #000;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #fff;
+}
+
+button[type="submit"] {
+    background-color: #ff0000;
+    color: #000;
+    font-weight: bold;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    text-transform: uppercase;
+    transition: background 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: #fff;
+    color: #000;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 25px 0;
+    color: #888;
+    font-style: italic;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #444;
+}
+
+.divider:not(:empty)::before {
+    margin-right: 10px;
+}
+
+.divider:not(:empty)::after {
+    margin-left: 10px;
+}
+
+.divider span {
+    font-style: italic;
+    color: #aaa;
+    font-size: 14px;
+}
+
+.auth-footer {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.auth-footer a {
+    color: #ff0000;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
