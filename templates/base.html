@@ -20,7 +20,7 @@
                         <a href="{{ url_for('profile') }}">{{ current_user.username }}</a>
                     </div>
                     <div class="dropdown-content">
-                        <a href="{{ url_for('profile') }}">Профиль</a>
+                        <button id="profileButton" class="profile-button">Профиль</button>
                         <a href="#">Настройки</a>
                         <a href="{{ url_for('logout') }}">Выйти</a>
                     </div>
@@ -41,11 +41,40 @@
                 <ul>
                     <li><a href="{{ url_for('index') }}">Главная</a></li>
                     <li><a href="{{ url_for('articles_page') }}">Статьи</a></li>
-                    <li><a href="#">Панк Timeline</a></li>
-                    <li><a href="#">О нас</a></li>
+                    <li><a href="{{ url_for('punk_timeline') }}">Панк Timeline</a></li>
+                    <li><a href="{{ url_for('about') }}">О нас</a></li>
                 </ul>
             </div>
         </nav>
+        <!-- Кнопка Профиль -->
+<div class="profile-container">
+    <div class="profile-overlay hidden" id="profileOverlay"></div> 
+    <div id="profilePopup" class="profile-popup hidden">
+        <span class="close-btn" id="closePopup">&times;</span>
+        <div class="profile-info">
+            <img src="{{ url_for('static', filename='uploads/' ~ (current_user.avatar_filename | default('punk_ava.png'))) }}" alt="Аватар" class="profile-avatar">
+            <div class="profile-details">
+                <p><strong>{{ current_user.username }}</strong></p>
+                {% if current_user.created_at %}
+                <p>Зарегистрирован: {{ current_user.created_at.strftime('%d.%m.%Y') }}</p>
+                {% else %}
+                    <p>Дата регистрации неизвестна</p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="user-articles">
+            <h4>Мои статьи</h4>
+            <ul>
+                {% for article in current_user.articles %}
+                    <li><a href="{{ url_for('article_details', article_id=article.id) }}">{{ article.title }}</a></li>
+                {% else %}
+                    <li>Нет статей</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
     </header>
     
     
@@ -56,11 +85,10 @@
     <footer>
         <div class="container">
             <div class="footer-links">
-                <a href="#">О проекте</a>
-                <a href="#">Контакты</a>
-                <a href="#">Реклама</a>
+                <a href="{{ url_for('about') }}">О проекте</a>
+                <a href="{{ url_for('about') }}">Контакты</a>
+                <a href="{{ url_for('about') }}">Реклама</a>
                 <a href="#">Правила</a>
-                <a href="#">FAQ</a>
             </div>
             <p>© 2023 PRIME PUNK. Все права не признаны. Копируйте, воруйте, распространяйте.</p>
         </div>
@@ -68,4 +96,30 @@
 
     {% block extra_js %}{% endblock %}
 </body>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const profilePopup = document.getElementById('profilePopup');
+            const profileOverlay = document.getElementById('profileOverlay');
+            const closeBtn = document.getElementById('closePopup');
+            const openBtn = document.getElementById('profileButton');
+
+            function openProfilePopup() {
+                profilePopup.classList.remove('hidden');
+                profileOverlay.classList.remove('hidden');
+            }
+
+            function closeProfilePopup() {
+                profilePopup.classList.add('hidden');
+                profileOverlay.classList.add('hidden');
+            }
+
+            openBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                openProfilePopup();
+            });
+
+            closeBtn.addEventListener('click', closeProfilePopup);
+            profileOverlay.addEventListener('click', closeProfilePopup);
+        });
+    </script>
 </html>

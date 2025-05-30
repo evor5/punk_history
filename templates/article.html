@@ -11,7 +11,7 @@
         <h1 class="article-title">{{ article.title }}</h1>
         <div class="article-meta">
             <span class="article-date">{{ article.created_at.strftime('%d.%m.%Y') }}</span>
-            <span class="article-author">Автор: {{ article.author }}</span>
+            <span class="article-author">Автор: {{ article.author.username }}</span>
         </div>
 
         {% if article.media_filename %}

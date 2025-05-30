@@ -14,6 +14,7 @@ from sqlalchemy.exc import IntegrityError
 from faker import Faker
 import os
 from werkzeug.utils import secure_filename
+from datetime import datetime
 
 # Инициализация приложения
 app = Flask(__name__)
@@ -45,6 +46,7 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(256), nullable=True)
     articles_count = db.Column(db.Integer, nullable=False, default=0)
     age = db.Column(db.Integer, nullable=False, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -57,10 +59,14 @@ class Article(db.Model):
     title = db.Column(db.String(255), nullable=False)
     content = db.Column(db.Text, nullable=False)
     media_filename = db.Column(db.String(255), nullable=True)
-    created_at = db.Column(db.DateTime, default=db.func.now())
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     category = db.relationship('Category', backref='articles')
     tags = db.relationship('Tag', secondary='article_tag', backref='articles')
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    author = db.relationship('User', backref='articles', foreign_keys=[user_id])
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -183,7 +189,9 @@ def articles_page():
         article = Article(
             title=title,
             content=content,
-            media_filename=filename
+            media_filename=filename,
+            author=current_user,
+            author_id=current_user.id
         )
         db.session.add(article)
         db.session.commit()
@@ -193,8 +201,29 @@ def articles_page():
     articles = Article.query.order_by(Article.created_at.desc()).all()
     return render_template('articles.html', articles=articles)
 
+@app.route('/delete_article/<int:article_id>', methods=['POST'])
+@login_required
+def delete_article(article_id):
+    article = Article.query.get_or_404(article_id)
+    if article.author_id != current_user.id:
+        flash("Вы не можете удалить чужую статью.", "danger")
+        return redirect(url_for('articles_page'))
+
+    if article.media_filename:
+        try:
+            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], article.media_filename))
+        except FileNotFoundError:
+            pass  # Если файл не найден, неважно
+
+    db.session.delete(article)
+    db.session.commit()
+    flash("Статья удалена", "success")
+    return redirect(url_for('articles_page'))
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    show_message = 'next' in request.args
+    
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
@@ -205,9 +234,10 @@ def login():
             return redirect(url_for('login'))
 
         login_user(user)
+        next_page = request.args.get('next')
         return redirect(url_for('index'))
 
-    return render_template('login.html')
+    return render_template('login.html', show_message=show_message)
 
 @app.route('/logout')
 @login_required
@@ -245,6 +275,77 @@ def profile():
 def article_details(article_id):
     article = Article.query.get_or_404(article_id)
     return render_template('article.html', article=article)
+
+@app.route('/timeline')
+def punk_timeline():
+    events = [
+        {
+            "year": "1976",
+            "title": "Рождение панк-рока",
+            "image": "../static/uploads/Sex_Pistols.jpg",
+            "description": "В Нью-Йорке и Лондоне появляется новый агрессивный и антикоммерческий музыкальный стиль. Группы вроде Ramones, Sex Pistols и The Damned бросают вызов устоям общества, создавая громкую, быструю и сырую музыку — панк-рок. Это начало движения, которое повлияло не только на музыку, но и на моду, искусство и политику."
+        },
+        {
+            "year": "1977",
+            "title": "Панк взрывает индустрию",
+            "image": "../static/uploads/never_mind(sex_pistols).jpg",
+            "description": "Выход альбома Sex Pistols 'Never Mind the Bollocks' и The Clash 'The Clash' шокирует публику. Грязный звук, анархические тексты и провокации становятся символом целого поколения. Этот год называют 'годом панка', когда движение становится по-настоящему массовым в Великобритании."
+        },
+        {
+            "year": "1978",
+            "title": "Формирование субкультуры",
+            "image": "../static/uploads/diy-мода.jpg",
+            "description": "Панк-сцена растёт: появляются независимые лейблы, DIY-культура, фэнзины, альтернативная мода. Группы начинают организовывать подпольные концерты в клубах и гаражах. Молодёжь по всему миру подхватывает дух бунта, рождая локальные сцены в Европе, США и Японии."
+        },
+        {
+            "year": "1979",
+            "title": "Кризис и трансформация",
+            "image": "../static/uploads/sex_pistols1.jpg",
+            "description": "Sex Pistols распадаются. Некоторые считают, что панк умер, но на его обломках возникает множество новых направлений. Пост-панк, готик-рок и синт-панк ищут новые формы самовыражения. Это время переосмысления идей панка и ухода от шаблонов."
+        },
+        {
+            "year": "1980",
+            "title": "Рождение хардкор-панка",
+            "image": "../static/uploads/hard-punk.jpg",
+            "description": "В США появляется хардкор — быстрее, злее, громче. Black Flag, Minor Threat, Dead Kennedys говорят о социальном неравенстве, насилии, отчуждении. Хардкор становится новым голосом уличной молодёжи, отвергнутой обществом."
+        },
+        {
+            "year": "1982",
+            "title": "Панк становится политикой",
+            "image": "../static/uploads/polit-punk.jpg",
+            "description": "Crass, Discharge и другие анархо-панк-группы активно выступают против войны, капитализма и фашизма. Панк больше не только музыка — это протест, идеология, образ жизни. DIY-этика укрепляется как способ сопротивления системе."
+        },
+        {
+            "year": "1985",
+            "title": "Панк и массмедиа",
+            "image": "../static/uploads/massmedia.jpg",
+            "description": "Образы панков проникают в глянец и рекламу. Мода на ирокезы, заклёпки и кожу используется дизайнерами. При этом андеграунд-сцена продолжает существовать параллельно, сохраняя верность корням и уличной культуре."
+        },
+        {
+            "year": "1990",
+            "title": "Возвращение панка",
+            "image": "../static/uploads/greenday.jpg",
+            "description": "В 90-х начинается новое панк-движение. Green Day, The Offspring, Rancid возвращают панк в радиоэфир. Панк-сцена становится более доступной, но часть старой гвардии обвиняет новую волну в коммерциализации."
+        },
+        {
+            "year": "1994",
+            "title": "Панк в поп-культуре",
+            "image": "../static/uploads/pop-punk.jpg",
+            "description": "MTV, фильмы, реклама — всё использует эстетику панка. Он становится символом молодёжного протеста и модной субкультуры, теряя при этом часть своей изначальной остроты. Тем не менее, тысячи молодых людей вдохновляются этой энергией."
+        },
+        {
+            "year": "2000",
+            "title": "Цифровая эра панка",
+            "image": "../static/uploads/duft-punk.jpg",
+            "description": "С появлением интернета панк получает новое дыхание. Музыканты распространяют релизы сами, без лейблов, организуют DIY-фестивали. Панк больше не нуждается в одобрении индустрии — он живёт на форумах, в подвалах, на улицах. Идея панка — в независимости, честности и бунте — актуальна как никогда."
+        }
+    ]
+    return render_template('timeline.html', events=events)
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 
 # Инициализация БД
 @app.cli.command('init-db')

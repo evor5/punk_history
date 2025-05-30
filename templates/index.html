@@ -57,7 +57,7 @@
                 {% if article.media_filename %}
                     <img src="{{ url_for('static', filename='uploads/' ~ article.media_filename) }}" alt="{{ article.title }}">
                 {% else %}
-                    <img src="https://i.imgur.com/default-punk.jpg" alt="По умолчанию">
+                    <img src="../static/uploads/default_img.png" alt="По умолчанию">
                 {% endif %}
             </div>
             <div class="article-content">

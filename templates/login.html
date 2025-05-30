@@ -2,11 +2,12 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Вход | PRIME PUNK</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
-    <link rel="icon" href="../static/uploads/PUNK1.png" type="image/x-icon">
 </head>
 <body>
+
     <div class="user-menu">
         <a href="{{ url_for('index') }}" class="back-button">Назад</a>
     </div>
@@ -18,20 +19,26 @@
         </div>
     </header>
 
+    <div class="flash-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
     <main class="auth-section">
         <div class="auth-box">
             <h2 class="auth-title">Вход</h2>
-
-            {% if error %}
-                <div class="error">{{ error }}</div>
-            {% endif %}
 
             <form method="POST">
                 <div class="form-group">
                     <label for="username">Имя пользователя:</label>
                     <input type="text" id="username" name="username" required>
                 </div>
-
+                
                 <div class="form-group">
                     <label for="password">Пароль:</label>
                     <input type="password" id="password" name="password" required>
@@ -42,10 +49,36 @@
                 <div class="divider"><span>или</span></div>
 
                 <div class="auth-footer">
-                    Нет аккаунта? <a href="{{ url_for('register') }}">Зарегистрироваться</a>
+                    Нет аккаунта? <a href="{{ url_for('register') }}">Зарегистрируйтесь</a>
                 </div>
             </form>
         </div>
     </main>
+
+    <script>
+    // Анимация появления
+    document.addEventListener('DOMContentLoaded', () => {
+        const flashMessages = document.querySelectorAll('.flash-message');
+        flashMessages.forEach(msg => {
+            setTimeout(() => {
+                msg.classList.add('show');
+            }, 100); // небольшая задержка для плавности
+        });
+
+        // Автоисчезновение через 3 секунды
+        setTimeout(() => {
+            flashMessages.forEach(msg => {
+                msg.classList.remove('show');
+                msg.classList.add('hide');
+
+                // Удаление элемента после завершения анимации
+                setTimeout(() => {
+                    msg.remove();
+                }, 500); 
+            });
+        }, 3000);
+    });
+</script>
+
 </body>
 </html>

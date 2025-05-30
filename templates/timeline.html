@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Punk Timeline - PRIME PUNK{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='timeline.css') }}">
+{% endblock %}
+
+{% block content %}
+<h1 class="timeline-title">История панк-культуры</h1>
+<div class="timeline-container">
+    {% for event in events %}
+    <div class="timeline-event">
+        <div class="event-year">{{ event.year }}</div>
+        <div class="event-image">
+            <img src="{{ url_for('static', filename=event.image) }}" alt="Событие {{ event.year }}">
+        </div>
+        <h2 class="event-title">{{ event.title }}</h2>
+        <p class="event-description">{{ event.description }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

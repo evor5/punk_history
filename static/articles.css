@@ -11,6 +11,9 @@
     color: #ff1900;
     text-align: center;
     margin-bottom: 40px;
+    border-bottom: 2px solid #ff0000;
+    padding-bottom: 10px;
+    text-transform: uppercase;
 }
 
 .flash-messages {
@@ -37,16 +40,32 @@
     border: 1px solid #ff0000;
     border-radius: 5px;
     font-size: 1rem;
+    resize: none;
 }
 
+.expandable-textarea {
+    padding: 10px;
+    border: 1px solid #ff0000;
+    border-radius: 5px;
+    font-size: 1rem;
+    resize: none;
+    overflow-y: auto;
+    min-height: 100px;
+    max-height: 800px;
+}
+
+
 .submit-button {
-    padding: 10px 20px;
+    padding: 6px 20px;
     background-color: #ff0000;
     color: white;
     border: none;
     border-radius: 5px;
     font-size: 1.2rem;
     cursor: pointer;
+    display: inline-flex;
+    justify-content: center;
+    width:auto;
 }
 
 .submit-button:hover {
@@ -84,8 +103,21 @@
     box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
+    position: relative;
 }
-
+.article-card-link-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 1; /* ниже кнопки удаления */
+    display: block;
+    text-indent: -9999px; /* спрятать текст если есть */
+    background: transparent;
+    cursor: pointer;
+}
+.delete-button {
+    position: relative;
+    z-index: 10;
+}
 .article-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
@@ -183,172 +215,29 @@
     margin-bottom: 10px;
 }
 
-/* .logo .slogan {
-    color: #aaa;
-    font-style: italic;
-    letter-spacing: 2px;
-    font-size: 14px;
-} */
-
-/* Навигационное меню */
-/* .nav-menu {
-    background-color: #000;
-    padding: 15px 0;
-    margin-bottom: 30px;
-    border-top: 1px dashed #ff0000;
-    border-bottom: 1px dashed #ff0000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.nav-links ul {
-    display: flex;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.nav-links li {
-    margin: 0 15px;
-    position: relative;
-}
-
-.nav-links li:after {
-    content: "✺";
-    color: #ff0000;
-    position: absolute;
-    right: -20px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 12px;
-}
-
-.nav-links li:last-child:after {
-    display: none;
-}
-
-.nav-links a {
-    color: #fff;
-    text-decoration: none;
-    font-weight: 700;
-    padding: 5px 10px;
-    text-transform: uppercase;
-    font-size: 16px;
-    letter-spacing: 1px;
-    transition: all 0.3s;
-    border: 1px solid transparent;
-}
-
-.nav-links a:hover {
-    color: #ff0000;
-    border: 1px solid #ff0000;
-    background-color: rgba(255, 0, 0, 0.1);
-} */
-
-/* Пользовательское меню */
-
-/* .user-menu {
-    display: flex;
-    align-items: center;
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 999;
-}
-
-.user-menu a {
-    color: #fff;
-    text-decoration: none;
-    font-weight: 700;
-    padding: 5px 10px;
-    text-transform: uppercase;
-    font-size: 14px;
-    letter-spacing: 1px;
-    transition: all 0.3s;
-    border: 1px solid #ff0000;
-    margin-left: 10px;
-}
-
-.user-menu a.login {
-    background-color: #ff0000;
-    color: #000;
-}
-
-.user-menu a.register {
+.delete-button {
     background-color: transparent;
     color: #ff0000;
-}
-
-.user-menu a:hover {
-    background-color: #ff0000;
-    color: #000;
-} */
-
-/* Профиль пользователя */
-
-/* .user-profile {
-    display: flex;
-    align-items: center;
-}
-
-.user-profile img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 2px solid #ff0000;
-    margin-right: 10px;
-}
-
-.user-profile a {
-    color: #fff;
-    text-decoration: none;
-    font-weight: 700;
+    border: 2px dashed #ff0000;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    padding: 8px 16px;
+    margin: 10px 116px 7px auto;
+    margin-top: 10px;
+    cursor: pointer;
     text-transform: uppercase;
-    font-size: 14px;
     letter-spacing: 1px;
-    transition: all 0.3s;
+    transition: all 0.2s ease-in-out;
+    border-radius: 6px;
 }
 
-.user-profile a:hover {
-    color: #ff0000;
-} */
-
-/* Выпадающее меню */
-/* .dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    right: 0;
-    background-color: #000;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-    border: 1px solid #ff0000;
-}
-
-.dropdown-content a {
-    color: #fff;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    font-size: 14px;
-    text-transform: uppercase;
-}
-
-.dropdown-content a:hover {
+.delete-button:hover {
     background-color: #ff0000;
-    color: #000;
+    color: black;
+    border: 2px solid black;
+    transform: scale(1.05);
+    box-shadow: 0 0 5px #700000;
 }
-
-.dropdown:hover .dropdown-content {
-    display: block;
-} */
-
 
 /* Мобильная адаптивность */
 @media (max-width: 768px) {
