@@ -361,3 +361,5 @@ if __name__ == '__main__':
         from flask_migrate import upgrade
         upgrade()
     app.run(debug=True)
+
+application = app
