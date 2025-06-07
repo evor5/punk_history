@@ -19,7 +19,8 @@ from datetime import datetime
 # Инициализация приложения
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key-here'  # Важно заменить на сложный ключ!
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:2046@localhost/prime_punk'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:2046@localhost/prime_punk'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://postgres:2046@evor5.mysql.pythonanywhere-services.com/evor5$primepunk'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
