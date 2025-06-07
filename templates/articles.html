@@ -59,7 +59,7 @@
                     <p class="article-excerpt">{{ article.content[:150] }}...</p>
                 </div>
 
-                {% if current_user.is_authenticated and current_user.id == article.author.id %}
+                {% if current_user.is_authenticated and (current_user.id == article.author.id or current_user.is_admin) %}
                     <div style="text-align: right; margin-top: 8px; position: relative; z-index: 10;">
                         <form method="POST" action="{{ url_for('delete_article', article_id=article.id) }}" onsubmit="return confirm('Удалить статью?');">
                             <button type="submit" class="delete-button">Удалить</button>

@@ -24,6 +24,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://evor:passwordformysite@
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
+
 # В начало файла
 UPLOAD_FOLDER = 'static/uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -48,6 +49,8 @@ class User(db.Model, UserMixin):
     articles_count = db.Column(db.Integer, nullable=False, default=0)
     age = db.Column(db.Integer, nullable=False, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    is_admin = db.Column(db.Boolean, default=False)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -87,6 +90,15 @@ article_tag = db.Table(
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+@app.route('/make_admin/<int:user_id>')
+def make_admin(user_id):
+    user = User.query.get(user_id)
+    if user:
+        user.is_admin = True
+        db.session.commit()
+        return f"Пользователь {user.username} теперь админ."
+    return "Пользователь не найден."
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
