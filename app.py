@@ -91,14 +91,14 @@ article_tag = db.Table(
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-@app.route('/make_admin/<int:user_id>')
-def make_admin(user_id):
-    user = User.query.get(user_id)
-    if user:
-        user.is_admin = True
-        db.session.commit()
-        return f"Пользователь {user.username} теперь админ."
-    return "Пользователь не найден."
+# @app.route('/make_admin/<int:user_id>')
+# def make_admin(user_id):
+#     user = User.query.get(user_id)
+#     if user:
+#         user.is_admin = True
+#         db.session.commit()
+#         return f"Пользователь {user.username} теперь админ."
+#     return "Пользователь не найден."
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -218,7 +218,7 @@ def articles_page():
 @login_required
 def delete_article(article_id):
     article = Article.query.get_or_404(article_id)
-    if article.author_id != current_user.id:
+    if article.author_id != current_user.id and not current_user.is_admin:
         flash("Вы не можете удалить чужую статью.", "danger")
         return redirect(url_for('articles_page'))
 
