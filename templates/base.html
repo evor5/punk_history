@@ -21,7 +21,7 @@
                     </div>
                     <div class="dropdown-content">
                         <a href="#" id="profileButton" class="profile-button">Профиль</a>
-                        <a href="#" onclick="openSettingsPopup()">Настройки</a>
+                        <a href="#" id="settingsButton" class="profile-button">Настройки</a>
                         <a href="{{ url_for('logout') }}">Выйти</a>
                     </div>
                 </div>
@@ -127,19 +127,12 @@
             const profileOverlay = document.getElementById('profileOverlay');
             const closeBtn = document.getElementById('closePopup');
             const openBtn = document.getElementById('profileButton');
+
             const settingsPopup = document.getElementById("settingsPopup");
             const settingsOverlay = document.getElementById("settingsOverlay");
+            const settingsBtn = document.getElementById("settingsButton");
 
-            window.openSettingsPopup = function () {
-                settingsPopup.classList.remove("hidden");
-                settingsOverlay.classList.remove("hidden");
-            };
-
-            window.closeSettingsPopup = function () {
-                settingsPopup.classList.add("hidden");
-                settingsOverlay.classList.add("hidden");
-            };
-
+            // Профиль
             function openProfilePopup() {
                 profilePopup.classList.remove('hidden');
                 profileOverlay.classList.remove('hidden');
@@ -157,8 +150,19 @@
 
             closeBtn.addEventListener('click', closeProfilePopup);
             profileOverlay.addEventListener('click', closeProfilePopup);
-            settingsOverlay.addEventListener('click', window.closeSettingsPopup);
-        });
 
+            // Настройки
+            settingsBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                settingsPopup.classList.remove("hidden");
+                settingsOverlay.classList.remove("hidden");
+            });
+
+            settingsOverlay.addEventListener('click', () => {
+                settingsPopup.classList.add("hidden");
+                settingsOverlay.classList.add("hidden");
+            });
+        });
     </script>
+
 </html>
