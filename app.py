@@ -20,7 +20,11 @@ from datetime import datetime
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key-here'  # Важно заменить на сложный ключ!
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:2046@localhost/prime_punk'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://evor:passwordformysite@evor.mysql.pythonanywhere-services.com/evor$prime_punk'
+if os.getenv("FLASK_ENV") == "production":
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://evor:passwordformysite@evor.mysql.pythonanywhere-services.com/evor$prime_punk'
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:2046@localhost/prime_punk'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://evor:passwordformysite@evor.mysql.pythonanywhere-services.com/evor$prime_punk'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
@@ -283,6 +287,25 @@ def index():
 @login_required
 def profile():
     return render_template('profile.html', user=current_user)
+
+@app.route('/update_settings', methods=['POST'])
+@login_required
+def update_settings():
+    username = request.form['username']
+    avatar = request.files.get('avatar')
+
+    if username:
+        current_user.username = username
+
+    if avatar:
+        filename = secure_filename(avatar.filename)
+        avatar.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        current_user.avatar = filename
+
+    db.session.commit()
+    flash('Настройки обновлены!', 'success')
+    return redirect(url_for('profile'))
+
 
 @app.route('/article/<int:article_id>')
 def article_details(article_id):

@@ -20,8 +20,8 @@
                         <a href="{{ url_for('profile') }}">{{ current_user.username }}</a>
                     </div>
                     <div class="dropdown-content">
-                        <button id="profileButton" class="profile-button">Профиль</button>
-                        <a href="#">Настройки</a>
+                        <a href="#" id="profileButton" class="profile-button">Профиль</a>
+                        <a href="#" onclick="openSettingsPopup()">Настройки</a>
                         <a href="{{ url_for('logout') }}">Выйти</a>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
                 </ul>
             </div>
         </nav>
-        <!-- Кнопка Профиль -->
+     <!-- Кнопка Профиль -->
 <div class="profile-container">
     <div class="profile-overlay hidden" id="profileOverlay"></div> 
     <div id="profilePopup" class="profile-popup hidden">
@@ -72,6 +72,31 @@
                 {% endfor %}
             </ul>
         </div>
+    </div>
+
+    <!-- Новое: окно настроек -->
+    <div class="profile-overlay hidden" id="settingsOverlay"></div>
+
+    <div id="settingsPopup" class="profile-popup hidden">
+        <span class="close-btn" onclick="closeSettingsPopup()">&times;</span>
+        <h2>Настройки</h2>
+
+        <form action="{{ url_for('update_settings') }}" method="POST" enctype="multipart/form-data">
+            <div class="profile-info">
+                <img id="currentAvatar" src="{{ url_for('static', filename='uploads/' + current_user.avatar_filename | default('punk_ava.png')) }}" class="profile-avatar" alt="Текущая аватарка">
+                <div class="profile-details">
+                    <label for="avatar">Новая аватарка:</label><br>
+                    <input type="file" name="avatar" id="avatar" accept="image/*">
+                </div>
+            </div>
+
+            <div class="settings-field">
+                <label for="username">Никнейм:</label><br>
+                <input type="text" name="username" id="username" value="{{ current_user.username }}">
+            </div>
+
+            <button type="submit" class="profile-button">Сохранить</button>
+        </form>
     </div>
 </div>
 
@@ -102,6 +127,18 @@
             const profileOverlay = document.getElementById('profileOverlay');
             const closeBtn = document.getElementById('closePopup');
             const openBtn = document.getElementById('profileButton');
+            const settingsPopup = document.getElementById("settingsPopup");
+            const settingsOverlay = document.getElementById("settingsOverlay");
+
+            window.openSettingsPopup = function () {
+                settingsPopup.classList.remove("hidden");
+                settingsOverlay.classList.remove("hidden");
+            };
+
+            window.closeSettingsPopup = function () {
+                settingsPopup.classList.add("hidden");
+                settingsOverlay.classList.add("hidden");
+            };
 
             function openProfilePopup() {
                 profilePopup.classList.remove('hidden');
@@ -120,6 +157,8 @@
 
             closeBtn.addEventListener('click', closeProfilePopup);
             profileOverlay.addEventListener('click', closeProfilePopup);
+            settingsOverlay.addEventListener('click', window.closeSettingsPopup);
         });
+
     </script>
 </html>
