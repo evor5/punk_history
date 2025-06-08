@@ -20,11 +20,13 @@ from datetime import datetime
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key-here'  # Важно заменить на сложный ключ!
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:2046@localhost/prime_punk'
-if os.getenv("FLASK_ENV") == "production":
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://evor:passwordformysite@evor.mysql.pythonanywhere-services.com/evor$prime_punk'
-else:
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:2046@localhost/prime_punk'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://evor:passwordformysite@evor.mysql.pythonanywhere-services.com/evor$prime_punk'
+
+# if os.getenv("FLASK_ENV") == "production":
+#     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://evor:passwordformysite@evor.mysql.pythonanywhere-services.com/evor$prime_punk'
+# else:
+#     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:2046@localhost/prime_punk'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://evor:passwordformysite@evor.mysql.pythonanywhere-services.com/evor$prime_punk'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
