@@ -205,16 +205,19 @@ def articles_page():
 
         filename = None
         if media_file and media_file.filename:
+            filename = secure_filename(media_file.filename)
+            media_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
             print('FILENAME:', filename)
             print('UPLOAD_FOLDER:', app.config['UPLOAD_FOLDER'])
             print('MEDIA_PATH:', media_path)
-            filename = secure_filename(media_file.filename)
-            media_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
             media_file.save(media_path)
             if os.path.exists(media_path):
                 print('Файл успешно сохранён')
             else:
                 print('Файл НЕ сохранён')
+
 
 
         article = Article(
