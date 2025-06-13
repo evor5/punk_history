@@ -63,6 +63,8 @@ class User(db.Model, UserMixin):
     articles_count = db.Column(db.Integer, nullable=False, default=0)
     age = db.Column(db.Integer, nullable=False, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    avatar = db.Column(db.String(256), nullable=True, default='default_avatar.png')
+
 
     is_admin = db.Column(db.Boolean, default=False)
 
@@ -335,7 +337,7 @@ def update_settings():
 
     db.session.commit()
     flash('Настройки обновлены!', 'success')
-    return jsonify({'status': 'success'})
+    return redirect(url_for('index'))
 
 @app.route('/article/<int:article_id>')
 def article_details(article_id):
