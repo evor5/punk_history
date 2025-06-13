@@ -330,11 +330,9 @@ def update_settings():
         unique_filename = f"{uuid4().hex}{ext}"
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
         avatar_file.save(filepath)
-        current_user.avatar_filename = unique_filename
+        current_user.avatar = unique_filename
 
     current_user.username = username
-    db.session.commit()
-
     db.session.commit()
     flash('Настройки обновлены!', 'success')
     return redirect(url_for('index'))
