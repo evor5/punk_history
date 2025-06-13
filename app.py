@@ -32,9 +32,13 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
 # В начало файла
-UPLOAD_FOLDER = 'static/uploads'
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+# UPLOAD_FOLDER = 'static/uploads'
+# os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+UPLOAD_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static', 'uploads')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+
 
 # Инициализация расширений
 db = SQLAlchemy(app)
@@ -201,9 +205,17 @@ def articles_page():
 
         filename = None
         if media_file and media_file.filename:
+            print('FILENAME:', filename)
+            print('UPLOAD_FOLDER:', app.config['UPLOAD_FOLDER'])
+            print('MEDIA_PATH:', media_path)
             filename = secure_filename(media_file.filename)
             media_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             media_file.save(media_path)
+            if os.path.exists(media_path):
+                print('Файл успешно сохранён')
+            else:
+                print('Файл НЕ сохранён')
+
 
         article = Article(
             title=title,
