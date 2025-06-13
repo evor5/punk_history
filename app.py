@@ -384,6 +384,9 @@ def punk_timeline():
 def about():
     return render_template('about.html')
 
+@app.route('/rules')
+def rules():
+    return render_template('rules.html')
 
 # Инициализация БД
 @app.cli.command('init-db')
