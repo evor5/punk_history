@@ -16,7 +16,7 @@
             {% if current_user.is_authenticated %}
                 <div class="dropdown">
                     <div class="user-profile">
-                        <img src="../static/uploads/punk_ava.png" alt="Аватар">
+                       <img src="{{ url_for('static', filename='uploads/' + current_user.avatar) }}" alt="Аватар">
                         <a href="{{ url_for('profile') }}">{{ current_user.username }}</a>
                     </div>
                     <div class="dropdown-content">
@@ -26,6 +26,7 @@
                     </div>
                 </div>
             {% else %}
+                <img src="{{ url_for('static', filename='uploads/punk_ava.png') }}" alt="Аватар по умолчанию">
                 <a href="{{ url_for('login') }}" class="login">Войти</a>
                 <a href="{{ url_for('register') }}" class="register">Регистрация</a>
             {% endif %}
