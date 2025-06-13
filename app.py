@@ -317,19 +317,30 @@ def profile():
 @login_required
 def update_settings():
     username = request.form['username']
-    avatar = request.files.get('avatar')
+    avatar_file = request.files.get('avatar')
 
     if username:
         current_user.username = username
 
-    if avatar:
-        filename = secure_filename(avatar.filename)
-        avatar.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        current_user.avatar = filename
+    if avatar_file and avatar_file.filename != '':
+        ext = os.path.splitext(secure_filename(avatar_file.filename))[1]
+        unique_filename = f"{uuid4().hex}{ext}"
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
+        avatar_file.save(filepath)
+        current_user.avatar_filename = unique_filename
+
+    current_user.username = username
+    db.session.commit()
+
+    # if avatar:
+    #     filename = secure_filename(avatar.filename)
+    #     avatar.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    #     current_user.avatar = filename
+
 
     db.session.commit()
     flash('Настройки обновлены!', 'success')
-    return redirect(url_for('profile'))
+    return redirect(url_for('index'))
 
 
 @app.route('/article/<int:article_id>')
