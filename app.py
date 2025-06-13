@@ -15,6 +15,9 @@ from faker import Faker
 import os
 from werkzeug.utils import secure_filename
 from datetime import datetime
+from uuid import uuid4
+import time
+
 
 # Инициализация приложения
 app = Flask(__name__)
@@ -205,19 +208,24 @@ def articles_page():
 
         filename = None
         if media_file and media_file.filename:
-            filename = secure_filename(media_file.filename)
-            media_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            # filename = secure_filename(media_file.filename)
+            # media_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 
-            print('FILENAME:', filename)
-            print('UPLOAD_FOLDER:', app.config['UPLOAD_FOLDER'])
-            print('MEDIA_PATH:', media_path)
+            # print('FILENAME:', filename)
+            # print('UPLOAD_FOLDER:', app.config['UPLOAD_FOLDER'])
+            # print('MEDIA_PATH:', media_path)
 
+            # media_file.save(media_path)
+            # if os.path.exists(media_path):
+            #     print('Файл успешно сохранён')
+            # else:
+            #     print('Файл НЕ сохранён')
+            original_filename = secure_filename(media_file.filename)
+            ext = os.path.splitext(original_filename)[1] 
+            unique_name = f"{uuid4().hex}_{int(time.time())}{ext}"
+            media_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_name)
             media_file.save(media_path)
-            if os.path.exists(media_path):
-                print('Файл успешно сохранён')
-            else:
-                print('Файл НЕ сохранён')
-
+            filename = unique_name
 
 
         article = Article(
