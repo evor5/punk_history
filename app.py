@@ -332,16 +332,9 @@ def update_settings():
     current_user.username = username
     db.session.commit()
 
-    # if avatar:
-    #     filename = secure_filename(avatar.filename)
-    #     avatar.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    #     current_user.avatar = filename
-
-
     db.session.commit()
     flash('Настройки обновлены!', 'success')
-    return redirect(url_for('index'))
-
+    return jsonify({'status': 'success'})
 
 @app.route('/article/<int:article_id>')
 def article_details(article_id):
