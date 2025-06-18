@@ -17,12 +17,16 @@
 }
 
 .flash-messages {
-    margin-bottom: 20px;
-    padding: 10px;
-    background-color: #ff0000;
-    color: #fff;
-    border-radius: 5px;
+  padding: 10px 20px;
+  margin: 15px auto;
+  border-radius: 5px;
+  background-color: #d4edda;
+  color: #155724;
+  width: fit-content;
+  text-align: center;
+  font-weight: bold;
 }
+
 
 .article-create-section {
     margin-bottom: 40px;
