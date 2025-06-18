@@ -34,6 +34,12 @@
             </ul>
         </div>
         {% endif %}
+        {% if current_user.is_authenticated and (current_user.id == article.author.id or current_user.is_admin) %}
+            <form method="POST" action="{{ url_for('delete_article', article_id=article.id) }}" onsubmit="return confirm('Удалить статью?');" style="margin-top: 24px;">
+                <input type="hidden" name="from_article_page" value="true">
+                <button type="submit" class="delete-button">Удалить статью</button>
+            </form>
+        {% endif %}
     </section>
 </div>
 {% endblock %}

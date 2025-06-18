@@ -250,20 +250,28 @@ def articles_page():
 @login_required
 def delete_article(article_id):
     article = Article.query.get_or_404(article_id)
+
     if article.author_id != current_user.id and not current_user.is_admin:
         flash("Вы не можете удалить чужую статью.", "danger")
         return redirect(url_for('articles_page'))
 
+    # Удаление файла, если прикреплён
     if article.media_filename:
         try:
             os.remove(os.path.join(app.config['UPLOAD_FOLDER'], article.media_filename))
         except FileNotFoundError:
-            pass  # Если файл не найден, неважно
+            pass
 
     db.session.delete(article)
     db.session.commit()
     flash("Статья удалена", "success")
-    return redirect(url_for('articles_page'))
+
+    # Проверка скрытого поля из формы
+    if request.form.get('from_article_page'):
+        return redirect(url_for('articles_page'))
+    else:
+        return redirect(request.referrer or url_for('articles_page'))
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
