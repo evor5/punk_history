@@ -308,7 +308,7 @@ def add_test_user():
 # Основные маршруты
 @app.route('/')
 def index():
-    articles = Article.query.order_by(Article.created_at.desc()).all()
+    articles = Article.query.order_by(Article.created_at.desc()).limit(6).all()
     return render_template('index.html', articles=articles)
 
 @app.route('/profile')

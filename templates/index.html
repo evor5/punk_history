@@ -51,14 +51,14 @@
 <section class="latest-articles">
     <h3 class="section-title">Последние материалы</h3>
     <div class="articles-grid">
-        <a href="{{ url_for('article_details', article_id=article.id) }}" class="article-card-link-overlay" aria-label="Читать статью {{ article.title }}"></a>
         {% for article in articles %}
         <div class="article-card">
+            <a href="{{ url_for('article_details', article_id=article.id) }}" class="article-card-link-overlay" aria-label="Читать статью {{ article.title }}"></a>
             <div class="article-image">
                 {% if article.media_filename %}
                     <img src="{{ url_for('static', filename='uploads/' ~ article.media_filename) }}" alt="{{ article.title }}">
                 {% else %}
-                    <img src="../static/uploads/default_img.png" alt="По умолчанию">
+                    <img src="{{ url_for('static', filename='uploads/default_img.png') }}" alt="По умолчанию">
                 {% endif %}
             </div>
             <div class="article-content">
@@ -74,6 +74,7 @@
         {% endfor %}
     </div>
 </section>
+
 
 <section class="newsletter">
     <h4 class="newsletter-title">Подпишись на панк-рассылку</h4>
