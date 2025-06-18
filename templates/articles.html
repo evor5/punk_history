@@ -11,11 +11,13 @@
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
+        <div class="flash-container">
             <div class="flash-messages">
                 {% for category, message in messages %}
                     <div class="flash-message">{{ message }}</div>
                 {% endfor %}
             </div>
+        </div>
         {% endif %}
     {% endwith %}
 
@@ -85,14 +87,14 @@
     });
     </script>
     <script>
-    setTimeout(function () {
-        const flashMessages = document.querySelector('.flash-messages');
-        if (flashMessages) {
-        flashMessages.style.transition = 'opacity 0.5s ease';
-        flashMessages.style.opacity = '0';
-        setTimeout(() => flashMessages.remove(), 500);
-        }
-    }, 2000);
+        setTimeout(function () {
+            const flashMessages = document.querySelector('.flash-messages');
+            if (flashMessages) {
+            flashMessages.style.opacity = '0';
+            flashMessages.style.transform = 'translateY(-10px)';
+            setTimeout(() => flashMessages.remove(), 500);
+            }
+        }, 2000);
     </script>
 </div>
 {% endblock %}
